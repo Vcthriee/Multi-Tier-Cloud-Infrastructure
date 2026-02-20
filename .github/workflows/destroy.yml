@@ -1,11 +1,10 @@
-
 name: Terraform Destroy
 
 on:
   workflow_dispatch:
     inputs:
       confirm:
-        description: "Type DESTROY to confirm destruction"
+        description: "Type DESTROY to confirm"
         required: true
 
 permissions:
@@ -14,28 +13,31 @@ permissions:
 
 jobs:
   destroy:
-    if: github.event.inputs.confirm == 'DESTROY'
     runs-on: ubuntu-latest
-    environment: dev   # Optional but recommended for environment tracking
-
+    # environment: dev  ← REMOVE (protection blocks)
+    defaults:
+      run:
+        working-directory: envs/dev  # YOUR FOLDER!
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
-      - name: Configure AWS Credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::411714853128:role/githubactionsROLE
-          aws-region: af-south-1
+    - name: Configure AWS Credentials (OIDC)
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::411714853128:role/githubactionsROLE
+        aws-region: af-south-1
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.6.0  # Pin version
 
-      - name: Terraform Init
-        run: terraform init
+    - name: Terraform Init
+      run: terraform init
 
-      - name: Terraform Plan Destroy
-        run: terraform plan -destroy
+    - name: Terraform Plan Destroy
+      run: terraform plan -destroy -detailed-exitcode
 
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve
