@@ -13,11 +13,12 @@ permissions:
 
 jobs:
   destroy:
+    if: github.event.inputs.confirm == 'DESTROY'
     runs-on: ubuntu-latest
-    # environment: dev  ← REMOVE (protection blocks)
     defaults:
       run:
-        working-directory: envs/dev  # YOUR FOLDER!
+        working-directory: envs/dev
+
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
@@ -31,13 +32,13 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
       with:
-        terraform_version: 1.6.0  # Pin version
+        terraform_version: 1.6.0
 
     - name: Terraform Init
-      run: terraform init
+      run: terraform init -input=false
 
     - name: Terraform Plan Destroy
-      run: terraform plan -destroy -detailed-exitcode
+      run: terraform plan -destroy -var-file=dev.tfvars -input=false -out=tfplan
 
     - name: Terraform Destroy
-      run: terraform destroy -auto-approve
+      run: terraform destroy -auto-approve -var-file=dev.tfvars -input=false
