@@ -4,7 +4,7 @@ terraform {
     bucket         = "vcthriee-terraform-states"
     key            = "cloud-platform/dev/terraform.tfstate"
     region         = "af-south-1"
-    use_lockfile = true
+    dynamodb_table = "terraform-state-lock"
     encrypt        = true
   }
 }
