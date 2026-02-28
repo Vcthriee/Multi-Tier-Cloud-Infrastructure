@@ -1,3 +1,4 @@
+
 # .github/workflows/destroy.yml
 name: Terraform Destroy
 
@@ -15,23 +16,14 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: "arn:aws:iam::411714853128:role/githubactionsROLE"
           aws-region: af-south-1
-          
       - uses: hashicorp/setup-terraform@v3
-      
       - run: |
           cat << 'EOF' > dev.tfvars
           ${{ secrets.TFVARS_DEV }}
           EOF
-          
       - run: terraform init
-      
-      - name: Force Unlock State
-        run: terraform force-unlock -force 59d443ff-c12b-a291-172b-f45d227c83c4
-        continue-on-error: true
-        
-      - run: terraform destroy -auto-approve -var-file=dev.tfvars 
+      - run: terraform destroy -auto-approve -var-file=dev.tfvars
