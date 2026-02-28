@@ -1,0 +1,29 @@
+
+# .github/workflows/destroy.yml
+name: Terraform Destroy
+
+on:
+  workflow_dispatch:  # Manual trigger only
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: envs/dev
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: "arn:aws:iam::411714853128:role/githubactionsROLE"
+          aws-region: af-south-1
+      - uses: hashicorp/setup-terraform@v3
+      - run: |
+          cat << 'EOF' > dev.tfvars
+          ${{ secrets.TFVARS_DEV }}
+          EOF
+      - run: terraform init
+      - run: terraform destroy -auto-approve -var-file=dev.tfvars
