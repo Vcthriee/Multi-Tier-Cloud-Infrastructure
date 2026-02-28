@@ -31,4 +31,5 @@ jobs:
         run: terraform force-unlock -force 59d443ff-c12b-a291-172b-f45d227c83c4
         continue-on-error: true
         
-      - run: terraform destroy -auto-approve -var-file=dev.tfvars 
+      - run: terraform destroy -auto-approve -var-file=dev.tfvars
+      
