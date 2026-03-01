@@ -28,7 +28,8 @@ jobs:
       - run: terraform init
       
       - name: Force Unlock State
-        run: terraform force-unlock -force 59d443ff-c12b-a291-172b-f45d227c83c4
+        run: terraform force-unlock -force 75de9e84-5098-704a-8616-8b0805e6fd69
         continue-on-error: true
         
-      - run: terraform destroy -auto-approve -var-file=dev.tfvars 
+      - run: terraform destroy -auto-approve -var-file=dev.tfvars
+      
